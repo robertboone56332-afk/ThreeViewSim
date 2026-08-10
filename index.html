@@ -1,0 +1,62 @@
+﻿<!doctype html> <!-- 这里告诉浏览器：这个文件按现代 HTML5 标准解析，不要用老旧兼容模式。 -->
+<html lang="zh-CN"> <!-- 这里开始整个网页，并声明页面主要语言是中文，浏览器和辅助工具会按中文页面理解它。 -->
+  <head> <!-- 这里开始网页的“后台设置区”，这里的内容通常不直接显示在页面主体里。 -->
+    <meta charset="UTF-8" /> <!-- 这里指定字符编码为 UTF-8，中文标题、按钮文字和注释才能不乱码。 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- 这里告诉浏览器按设备宽度显示页面，手机或小屏幕上布局才不会被当成桌面网页缩小。 -->
+    <title>三面投影交互式虚拟仿真</title> <!-- 这里设置浏览器标签页标题，用户在浏览器顶部看到的就是这句话。 -->
+    <link rel="stylesheet" href="/src/style.css" /> <!-- 这里加载本地 style.css，页面的颜色、布局、按钮样式都由这个 CSS 文件控制。 -->
+  </head> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+  <body> <!-- 这里开始网页真正可见的内容区域，标题、三维场景和按钮都写在这里面。 -->
+    <div class="app-shell"> <!-- 这里创建最外层页面壳子，用它把顶部标题区和下方工作区组织在一起。 -->
+      <header class="app-header"> <!-- 这里开始网页的“后台设置区”，这里的内容通常不直接显示在页面主体里。 -->
+        <div> <!-- 这里创建一个普通容器，用来包住一组相关内容，方便 CSS 排版或 JS 挂载内容。 -->
+          <h1>三面投影交互式虚拟仿真</h1> <!-- 这里显示页面主标题，让用户一打开就知道这是三面投影交互式虚拟仿真模块。 -->
+          <p>三维形体 · 投影形成 · 投影面展开 · 三视图对应</p> <!-- 这里显示副标题，用几个关键词概括本模块会演示的教学流程。 -->
+        </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+        <button class="secondary-action" type="button" data-action="camera">恢复观察视角</button> <!-- 这里创建“恢复观察视角”按钮，JS 会通过 data-action="camera" 找到它并绑定相机复位动画。 -->
+      </header> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+
+      <main class="workspace"> <!-- 这里创建主工作区，左侧是三维教学场景，右侧是控制按钮面板。 -->
+        <section class="scene-stage" aria-label="三面投影三维教学场景"> <!-- 这里创建三维舞台区域，WebGL 画布、文字标签、SVG 辅助线都会叠放在这个区域里。 -->
+          <div id="scene-container" class="scene-container"></div> <!-- 这里创建 Three.js 画布容器，JS 会把 WebGLRenderer 生成的 canvas 放进这里。 -->
+          <div id="label-layer" class="label-layer-wrap"></div> <!-- 这里创建文字标签层，三维中的 OX、OY、OZ、V面等标签会投影到这个 HTML 层显示。 -->
+          <svg id="relations-overlay" class="relations-overlay" aria-hidden="true"></svg> <!-- 这里创建 SVG 覆盖层，“长对正、高平齐、宽相等”的红线和文字会画在这一层。 -->
+          <div class="scene-footer"> <!-- 这里创建底部操作提示栏，告诉用户鼠标左键、滚轮、右键分别怎么操作三维场景。 -->
+            <span>鼠标左键拖动：旋转观察</span> <!-- 这里显示一条鼠标操作提示，帮助用户知道当前三维场景可以怎样交互。 -->
+            <span>滚轮：缩放</span> <!-- 这里显示一条鼠标操作提示，帮助用户知道当前三维场景可以怎样交互。 -->
+            <span>右键拖动：平移</span> <!-- 这里显示一条鼠标操作提示，帮助用户知道当前三维场景可以怎样交互。 -->
+          </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+        </section> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+
+        <aside class="control-panel" aria-label="教学控制面板"> <!-- 这里创建右侧教学控制面板，所有投影面、投影图、展开和复位按钮都放在这里。 -->
+          <div class="panel-heading"> <!-- 这里创建面板标题区，上面写“教学流程”，下面显示当前正在进行的步骤。 -->
+            <p>教学流程</p> <!-- 这里是页面结构的一部分，浏览器会按照它的位置把内容组织到网页中。 -->
+            <strong class="current-step">准备中</strong> <!-- 这里显示当前步骤文字，JS 会不断修改它来告诉用户模型加载、投影显示或展开进度。 -->
+          </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+          <div class="button-panel"> <!-- 这里新增一个只负责布局的按钮区域容器；它不会改变任何按钮名称、data-action 或点击事件，只让右下按钮区能单独放大。 -->
+            <div class="button-row button-row-three"> <!-- 这里创建按钮行，用来把相关按钮排在同一排，保持控制面板结构清楚。 -->
+              <button type="button" data-action="v-plane">正投影面</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+              <button type="button" data-action="w-plane">侧投影面</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+              <button type="button" data-action="h-plane">水平投影面</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+            </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+            <div class="button-row button-row-three"> <!-- 这里创建按钮行，用来把相关按钮排在同一排，保持控制面板结构清楚。 -->
+              <button type="button" data-action="v-projection">正投影</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+              <button type="button" data-action="w-projection">侧投影</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+              <button type="button" data-action="h-projection">水平投影</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+            </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+            <div class="button-row"> <!-- 这里创建按钮行，用来把相关按钮排在同一排，保持控制面板结构清楚。 -->
+              <button type="button" data-action="unfold">三投影面的展开</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+            </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+            <div class="button-row"> <!-- 这里创建按钮行，用来把相关按钮排在同一排，保持控制面板结构清楚。 -->
+              <button type="button" data-action="relations">长对正、高平齐、宽相等</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+            </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+            <div class="button-row button-row-reset"> <!-- 这里创建一键复位按钮行；它仍在按钮区域底部，并且不会改变一键复位的功能绑定。 -->
+              <button type="button" data-action="reset">一键复位</button> <!-- 这里创建一个教学按钮，data-action 是它的身份标记，JS 根据这个标记决定点击后执行哪段功能。 -->
+            </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+          </div> <!-- 这里结束按钮区域容器；右侧控制面板会用 CSS 把它分配到更大的下半区。 -->
+        </aside> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+      </main> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+    </div> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+    <script type="module" src="/src/main.js"></script> <!-- 这里加载 src/main.js，浏览器读到这一行后才会真正启动 Three.js 场景和按钮逻辑。 -->
+  </body> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
+</html> <!-- 这里结束前面打开的 HTML 标签，表示这个区域的内容已经写完。 -->
