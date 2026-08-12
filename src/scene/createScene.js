@@ -6,8 +6,8 @@ import { INITIAL_CAMERA } from '../data/geometryData.js'; // 这里从 ../data/g
 function getContainerSize(container) { // 这里定义 getContainerSize 函数。函数就像一段可重复使用的小说明书，调用一次就执行一次。
   const rect = container.getBoundingClientRect(); // 这里读取容器在屏幕上的矩形范围，包括宽、高和位置，SVG 坐标换算要靠它。
   return { // 这里开始返回一个对象。对象里会装多个结果，调用方可以一次拿到它们。
-    width: Math.max(Math.floor(rect.width || container.clientWidth), 900), // 这里设置投影面横向宽度为 Math.max(Math.floor(rect.width || container.clientWidth), 900)，也就是沿 OX 方向能覆盖多远。
-    height: Math.max(Math.floor(rect.height || container.clientHeight), 600), // 这里设置投影面竖向高度为 Math.max(Math.floor(rect.height || container.clientHeight), 600)，也就是沿 OZ 方向能覆盖多高。
+    width: Math.max(Math.floor(rect.width || container.clientWidth), 1), // 这里用网页里三维容器真实显示出来的宽度作为 Three.js 画布宽度，只保留 1px 兜底，避免旧的 900px 最小值让相机误以为画布比页面实际更宽。
+    height: Math.max(Math.floor(rect.height || container.clientHeight), 1), // 这里用网页里三维容器真实显示出来的高度作为 Three.js 画布高度，只保留 1px 兜底，避免旧的 600px 最小值让相机误以为画布比页面实际更高。
   }; // 这里结束对象，表示这张配置表或数据表已经写完。
 } // 这里结束当前这一组配置。到这里为止，这个小对象里需要的说明已经写全。
 
